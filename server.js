@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ── Game Constants ──────────────────────────────────────────────────────────
 const KILL_LIMIT = 50;
 const MAX_PLAYERS = 5;
-const TICK_RATE = 20; // server ticks per second
+const TICK_RATE = 15; // server ticks per second (optimized)
 const BOT_NAMES = ['Shadow', 'Viper', 'Ghost', 'Phoenix', 'Blaze', 'Reaper', 'Storm', 'Cobra'];
 const PLAYER_MAX_HP = 100;
 const RESPAWN_DELAY = 2000; // ms
@@ -475,13 +475,12 @@ function updateBots(match) {
     }
   }
 
-  // Broadcast bot positions
+  // Broadcast bot positions (only alive bots with changed state)
   const botStates = {};
   for (const [id, bot] of match.bots) {
     botStates[id] = {
-      position: bot.position,
-      rotation: bot.rotation,
-      hp: bot.hp,
+      position: { x: Math.round(bot.position.x * 100) / 100, y: Math.round(bot.position.y * 100) / 100, z: Math.round(bot.position.z * 100) / 100 },
+      rotation: { x: Math.round((bot.rotation.x || 0) * 100) / 100, y: Math.round((bot.rotation.y || 0) * 100) / 100 },
       alive: bot.alive
     };
   }
@@ -648,9 +647,8 @@ io.on('connection', (socket) => {
         io.to(match.id).emit('scoreUpdate', getScoreboard(match));
       }
 
-      if (result.hit && !result.killed) {
-        io.to(match.id).emit('scoreUpdate', getScoreboard(match));
-      }
+      // Only send scoreUpdate on kills, not every hit
+      // This reduces network traffic significantly
     }
   });
 
