@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arena Deathmatch - Multiplayer FPS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Main Menu -->
+  <div id="mainMenu" class="screen active">
+    <div class="menu-bg"></div>
+    <div class="menu-content">
+      <h1 class="game-title">ARENA<span>DEATHMATCH</span></h1>
+      <p class="subtitle">MULTIPLAYER FPS COMBAT</p>
+
+      <div class="menu-form">
+        <div class="form-group">
+          <label for="playerName">CALL SIGN</label>
+          <input type="text" id="playerName" placeholder="Enter your name..." maxlength="16" value="">
+        </div>
+
+        <div class="form-group">
+          <label>SELECT MAP</label>
+          <div id="mapSelect" class="map-grid">
+            <!-- Maps populated by JS -->
+          </div>
+        </div>
+
+        <button id="playBtn" class="btn-primary" disabled>
+          <span class="btn-icon">▶</span> DEPLOY
+        </button>
+      </div>
+
+      <div class="menu-footer">
+        <p>First to <strong>50 kills</strong> wins | Up to 5 players | Voice chat enabled</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="screen">
+    <div class="loading-content">
+      <h2>DEPLOYING...</h2>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <p id="loadingText">Connecting to server...</p>
+    </div>
+  </div>
+
+  <!-- Game HUD -->
+  <div id="gameUI" class="screen">
+    <!-- Crosshair -->
+    <div id="crosshair">
+      <div class="ch-line ch-top"></div>
+      <div class="ch-line ch-bottom"></div>
+      <div class="ch-line ch-left"></div>
+      <div class="ch-line ch-right"></div>
+      <div class="ch-dot"></div>
+    </div>
+
+    <!-- Health & Ammo -->
+    <div id="hudBottom">
+      <div class="hud-health">
+        <span class="hud-icon">♥</span>
+        <div class="hud-bar">
+          <div id="healthBar" class="hud-bar-fill"></div>
+        </div>
+        <span id="healthText">100</span>
+      </div>
+      <div class="hud-ammo">
+        <span class="hud-icon">◆</span>
+        <span id="ammoText">30 / 90</span>
+      </div>
+    </div>
+
+    <!-- Kill Feed -->
+    <div id="killFeed"></div>
+
+    <!-- Score Display -->
+    <div id="scoreDisplay">
+      <span id="myKills">0</span> KILLS
+    </div>
+
+    <!-- Kill Limit Progress -->
+    <div id="killProgress">
+      <div id="killProgressBar"></div>
+      <span id="killProgressText">0 / 50</span>
+    </div>
+
+    <!-- Scoreboard (Tab) -->
+    <div id="scoreboard" class="hidden">
+      <h2>SCOREBOARD</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>RANK</th>
+            <th>PLAYER</th>
+            <th>KILLS</th>
+            <th>DEATHS</th>
+            <th>K/D</th>
+          </tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Hit Marker -->
+    <div id="hitMarker" class="hidden">✕</div>
+
+    <!-- Damage Indicator -->
+    <div id="damageOverlay"></div>
+
+    <!-- Kill Notification -->
+    <div id="killNotification" class="hidden"></div>
+
+    <!-- Death Screen -->
+    <div id="deathScreen" class="hidden">
+      <h2>YOU DIED</h2>
+      <p>Respawning...</p>
+    </div>
+
+    <!-- Voice Chat Indicator -->
+    <div id="voiceChat">
+      <button id="voiceToggle" class="voice-btn" title="Toggle Voice Chat (V)">
+        <span id="voiceIcon">🎤</span>
+      </button>
+      <div id="voiceSpeakers"></div>
+    </div>
+
+    <!-- Leave Match Button -->
+    <div id="leaveBtn" class="leave-match">
+      <button onclick="leaveMatch()">✕ LEAVE MATCH</button>
+    </div>
+
+    <!-- Mini Instructions -->
+    <div id="controls-hint">
+      WASD Move | Mouse Aim | Click Shoot | R Reload | Tab Scores | V Voice | ESC Menu
+    </div>
+  </div>
+
+  <!-- MVP / End Screen -->
+  <div id="mvpScreen" class="screen">
+    <div class="mvp-content">
+      <h1>MATCH OVER</h1>
+      <div id="mvpWinner">
+        <h2>WINNER</h2>
+        <div id="winnerName" class="mvp-name"></div>
+        <div id="winnerKills" class="mvp-stat"></div>
+      </div>
+      <div id="mvpCard">
+        <h3>★ MVP ★</h3>
+        <div id="mvpName" class="mvp-name"></div>
+        <div id="mvpStats" class="mvp-stat"></div>
+      </div>
+      <div id="finalScoreboard">
+        <h3>FINAL STANDINGS</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>PLAYER</th>
+              <th>KILLS</th>
+              <th>DEATHS</th>
+              <th>K/D</th>
+            </tr>
+          </thead>
+          <tbody id="finalScoreBody"></tbody>
+        </table>
+      </div>
+      <button id="backToMenuBtn" class="btn-primary" onclick="backToMenu()">
+        BACK TO MENU
+      </button>
+    </div>
+  </div>
+
+  <!-- Game Canvas Container -->
+  <div id="gameContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/game.js"></script>
+</body>
+</html>
